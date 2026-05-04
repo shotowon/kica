@@ -1,0 +1,17 @@
+struct A {
+	someField1: float;	
+	someField2: float;	
+}
+
+var a1 = 3;
+
+print 3 + 3;
+
+function with_args(a: int, b: string, hehe: float) -> int {
+	print a;
+	return 1;
+}
+
+var a = 3;
+print with_args(a, "hehe" + "haha", 3.13 + 3.2131  * 3.21);
+
