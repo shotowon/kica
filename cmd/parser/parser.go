@@ -13,24 +13,22 @@ func main() {
 		panic(fmt.Sprintf("usage: %s <source-code>", os.Args[0]))
 	}
 
-	file, err := os.ReadFile(os.Args[1])
+	l, err := lexer.New(os.Args[1:])
+	tokenFiles, err := l.Lex()
 	if err != nil {
 		panic(err)
 	}
 
-	l := lexer.New(string(file))
-	tokens, err := l.Lex()
+	p := parser.New(tokenFiles)
+	astFiles, err := p.Parse()
+
 	if err != nil {
 		panic(err)
 	}
 
-	p := parser.New(tokens)
-	stmts, err := p.Parse()
-	if err != nil {
-		panic(err)
-	}
-
-	for _, stmt := range stmts {
-		fmt.Println(stmt)
+	for _, file := range astFiles {
+		for _, stmt := range file.Statements() {
+			fmt.Println(stmt)
+		}
 	}
 }
