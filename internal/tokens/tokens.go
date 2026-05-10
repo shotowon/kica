@@ -7,6 +7,20 @@ import (
 	"github.com/shotowon/kica/internal/gears"
 )
 
+type File struct {
+	tokens []*Token
+}
+
+func NewFile(tokens []*Token) *File {
+	return &File{
+		tokens: tokens,
+	}
+}
+
+func (f *File) Tokens() []*Token {
+	return f.tokens
+}
+
 type TokenKind int
 
 func (k TokenKind) IsOneOf(kinds ...TokenKind) bool {
