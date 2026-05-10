@@ -20,6 +20,10 @@ func (t *NamedT) String() string {
 	return t.Tok.Literal
 }
 
+func (t *NamedT) Accept(v Visitor) (any, error) {
+	return v.visitNamedT(t)
+}
+
 type IntT struct {
 	Loc gears.Location
 }
@@ -31,6 +35,10 @@ func (t *IntT) Location() gears.Location {
 
 func (t *IntT) String() string {
 	return "int"
+}
+
+func (t *IntT) Accept(v Visitor) (any, error) {
+	return v.visitIntT(t)
 }
 
 type FloatT struct {
@@ -46,6 +54,10 @@ func (t *FloatT) String() string {
 	return "float"
 }
 
+func (t *FloatT) Accept(v Visitor) (any, error) {
+	return v.visitFloatT(t)
+}
+
 type StringT struct {
 	Loc gears.Location
 }
@@ -57,6 +69,10 @@ func (t *StringT) Location() gears.Location {
 
 func (t *StringT) String() string {
 	return "string"
+}
+
+func (t *StringT) Accept(v Visitor) (any, error) {
+	return v.visitStringT(t)
 }
 
 type FunctionT struct {

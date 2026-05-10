@@ -25,6 +25,10 @@ func (s *ExprStmt) String() string {
 	return fmt.Sprintf("(expr %s)", s.Value)
 }
 
+func (s *ExprStmt) Accept(v Visitor) (any, error) {
+	return v.visitExprStmt(s)
+}
+
 type PrintStmt struct {
 	Loc   gears.Location
 	Value Expr
@@ -40,6 +44,10 @@ func (s *PrintStmt) String() string {
 		return "(print <nil>)"
 	}
 	return fmt.Sprintf("(print %s)", s.Value)
+}
+
+func (s *PrintStmt) Accept(v Visitor) (any, error) {
+	return v.visitPrintStmt(s)
 }
 
 type StructDefStmt struct {
@@ -60,6 +68,10 @@ func (s *StructDefStmt) String() string {
 	}
 
 	return fmt.Sprintf("{struct %s %s}", s.Name, fieldsStr.String())
+}
+
+func (s *StructDefStmt) Accept(v Visitor) (any, error) {
+	return v.visitStructDefStmt(s)
 }
 
 type FuncDefStmt struct {
@@ -90,6 +102,10 @@ func (s *FuncDefStmt) String() string {
 		gears.Map(s.Body, func(s Stmt) string { return fmt.Sprintf("%s ", s) }))
 }
 
+func (s *FuncDefStmt) Accept(v Visitor) (any, error) {
+	return v.visitFuncDefStmt(s)
+}
+
 type ReturnStmt struct {
 	Value Expr
 	Loc   gears.Location
@@ -106,6 +122,10 @@ func (s *ReturnStmt) String() string {
 	}
 
 	return "return"
+}
+
+func (s *ReturnStmt) Accept(v Visitor) (any, error) {
+	return v.visitReturnStmt(s)
 }
 
 type VarDefStmt struct {
@@ -126,6 +146,10 @@ func (s *VarDefStmt) String() string {
 	return fmt.Sprintf("(var %s %s)", s.Name.Literal, s.Value)
 }
 
+func (s *VarDefStmt) Accept(v Visitor) (any, error) {
+	return v.visitVarDefStmt(s)
+}
+
 type ModuleDefStmt struct {
 	Loc  gears.Location
 	Name *tokens.Token
@@ -138,4 +162,8 @@ func (s *ModuleDefStmt) Location() gears.Location {
 
 func (s *ModuleDefStmt) String() string {
 	return fmt.Sprintf("package %s", s.Name.Literal)
+}
+
+func (s *ModuleDefStmt) Accept(v Visitor) (any, error) {
+	return v.visitModuleDefStmt(s)
 }

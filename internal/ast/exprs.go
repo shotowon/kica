@@ -24,6 +24,10 @@ func (e *AtomExpr) String() string {
 	return e.Value.Literal
 }
 
+func (s *AtomExpr) Accept(v Visitor) (any, error) {
+	return v.visitAtomExpr(s)
+}
+
 type UnaryExpr struct {
 	Value Expr
 	Op    *tokens.Token
@@ -42,6 +46,10 @@ func (e *UnaryExpr) String() string {
 		op = e.Op.Literal
 	}
 	return fmt.Sprintf("(%s %v)", op, e.Value)
+}
+
+func (s *UnaryExpr) Accept(v Visitor) (any, error) {
+	return v.visitUnaryExpr(s)
 }
 
 type BinaryExpr struct {
@@ -65,6 +73,10 @@ func (e *BinaryExpr) String() string {
 	return fmt.Sprintf("(%s %v %v)", op, e.LHS, e.RHS)
 }
 
+func (s *BinaryExpr) Accept(v Visitor) (any, error) {
+	return v.visitBinaryExpr(s)
+}
+
 type FunctionCallExpr struct {
 	Name *tokens.Token
 	Args []Expr
@@ -85,4 +97,8 @@ func (e *FunctionCallExpr) String() string {
 		}
 	}
 	return fmt.Sprintf("(%s(%s))", e.Name.Literal, args.String())
+}
+
+func (s *FunctionCallExpr) Accept(v Visitor) (any, error) {
+	return v.visitFunctionCallExpr(s)
 }
