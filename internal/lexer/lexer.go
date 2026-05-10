@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"unicode"
 
@@ -10,20 +11,49 @@ import (
 )
 
 type lexer struct {
-	src []rune
-	loc gears.Location
+	sources [][]rune
+	loc     gears.Location
+	currSrc int
 }
 
-func New(src string) *lexer {
-	return &lexer{
-		src: []rune(src),
-		loc: gears.ZeroLoc(),
+func New(sources []string) (*lexer, error) {
+	l := new(lexer)
+
+	if len(sources) < 1 {
+		return nil, fmt.Errorf("source files not provided")
 	}
+
+	for _, src := range sources {
+		contents, err := os.ReadFile(src)
+		if err != nil {
+			return nil, err
+		}
+
+		l.sources = append(l.sources, []rune(string(contents)))
+	}
+
+	l.loc = gears.ZeroLoc()
+	return l, nil
 }
 
-func (l *lexer) Lex() ([]*tokens.Token, error) {
-	toks := make([]*tokens.Token, 0)
+func (l *lexer) Lex() ([]tokens.File, error) {
+	files := make([]tokens.File, len(l.sources))
 
+	for i := range l.sources {
+		l.setCurrentSource(i)
+		toks, err := l.lexFile()
+		if err != nil {
+			return nil, err
+		}
+
+		files[i] = *tokens.NewFile(toks)
+	}
+
+	return files, nil
+}
+
+func (l *lexer) lexFile() ([]*tokens.Token, error) {
+	toks := make([]*tokens.Token, 0)
 	for l.curr() != '0' {
 		if unicode.IsSpace(l.curr()) {
 			l.advance()
@@ -229,7 +259,7 @@ func (l *lexer) handleString() (*tokens.Token, error) {
 }
 
 func (l *lexer) advance() {
-	if l.loc.Offset >= len(l.src) {
+	if l.loc.Offset >= len(l.currentSource()) {
 		return
 	}
 
@@ -244,17 +274,25 @@ func (l *lexer) advance() {
 }
 
 func (l *lexer) curr() rune {
-	if l.loc.Offset >= len(l.src) {
+	if l.loc.Offset >= len(l.currentSource()) {
 		return '0'
 	}
 
-	return l.src[l.loc.Offset]
+	return l.currentSource()[l.loc.Offset]
 }
 
 func (l *lexer) peek() rune {
-	if l.loc.Offset+1 >= len(l.src) {
+	if l.loc.Offset+1 >= len(l.currentSource()) {
 		return '0'
 	}
 
-	return l.src[l.loc.Offset+1]
+	return l.currentSource()[l.loc.Offset+1]
+}
+
+func (l *lexer) setCurrentSource(id int) {
+	l.currSrc = id
+}
+
+func (l *lexer) currentSource() []rune {
+	return l.sources[l.currSrc]
 }
