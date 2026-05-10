@@ -10,21 +10,46 @@ import (
 )
 
 type parser struct {
-	tokens []*tokens.Token
-	loc    gears.Location
-	pos    int
+	files    []tokens.File
+	currFile int
+	loc      gears.Location
+	pos      int
 }
 
-func New(toks []*tokens.Token) *parser {
+func New(files []tokens.File) *parser {
 	p := new(parser)
-	p.tokens = toks
+	p.files = files
 	p.loc = gears.ZeroLoc()
 	p.pos = 0
 
 	return p
 }
 
-func (p *parser) Parse() ([]ast.Stmt, error) {
+func (p *parser) currentFile() *tokens.File {
+	return &p.files[p.currFile]
+}
+
+func (p *parser) setCurrentFile(id int) {
+	p.currFile = id
+}
+
+func (p *parser) Parse() ([]ast.File, error) {
+	files := make([]ast.File, len(p.files))
+	for i := range p.files {
+		p.setCurrentFile(i)
+
+		stmts, err := p.parseFile()
+		if err != nil {
+			return nil, err
+		}
+
+		files[i] = *ast.NewFile(stmts)
+	}
+
+	return files, nil
+}
+
+func (p *parser) parseFile() ([]ast.Stmt, error) {
 	stmts := make([]ast.Stmt, 0)
 
 	for p.curr().Kind != tokens.EOF {
@@ -465,19 +490,19 @@ func (p *parser) parseFuncCall() (ast.Expr, error) {
 }
 
 func (p *parser) curr() *tokens.Token {
-	if p.pos >= len(p.tokens) {
+	if p.pos >= len(p.currentFile().Tokens()) {
 		return nil
 	}
 
-	return p.tokens[p.pos]
+	return p.currentFile().Tokens()[p.pos]
 }
 
 func (p *parser) peekn(n int) *tokens.Token {
-	if p.pos+n >= len(p.tokens) {
+	if p.pos+n >= len(p.currentFile().Tokens()) {
 		return nil
 	}
 
-	return p.tokens[p.pos+n]
+	return p.currentFile().Tokens()[p.pos+n]
 }
 
 func (p *parser) advance() {
