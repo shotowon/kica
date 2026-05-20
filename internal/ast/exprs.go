@@ -25,7 +25,7 @@ func (e *AtomExpr) String() string {
 }
 
 func (s *AtomExpr) Accept(v Visitor) (any, error) {
-	return v.visitAtomExpr(s)
+	return v.VisitAtomExpr(s)
 }
 
 type UnaryExpr struct {
@@ -49,7 +49,7 @@ func (e *UnaryExpr) String() string {
 }
 
 func (s *UnaryExpr) Accept(v Visitor) (any, error) {
-	return v.visitUnaryExpr(s)
+	return v.VisitUnaryExpr(s)
 }
 
 type BinaryExpr struct {
@@ -74,7 +74,7 @@ func (e *BinaryExpr) String() string {
 }
 
 func (s *BinaryExpr) Accept(v Visitor) (any, error) {
-	return v.visitBinaryExpr(s)
+	return v.VisitBinaryExpr(s)
 }
 
 type FunctionCallExpr struct {
@@ -100,5 +100,5 @@ func (e *FunctionCallExpr) String() string {
 }
 
 func (s *FunctionCallExpr) Accept(v Visitor) (any, error) {
-	return v.visitFunctionCallExpr(s)
+	return v.VisitFunctionCallExpr(s)
 }

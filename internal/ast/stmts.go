@@ -26,7 +26,7 @@ func (s *ExprStmt) String() string {
 }
 
 func (s *ExprStmt) Accept(v Visitor) (any, error) {
-	return v.visitExprStmt(s)
+	return v.VisitExprStmt(s)
 }
 
 type PrintStmt struct {
@@ -47,7 +47,7 @@ func (s *PrintStmt) String() string {
 }
 
 func (s *PrintStmt) Accept(v Visitor) (any, error) {
-	return v.visitPrintStmt(s)
+	return v.VisitPrintStmt(s)
 }
 
 type StructDefStmt struct {
@@ -71,7 +71,7 @@ func (s *StructDefStmt) String() string {
 }
 
 func (s *StructDefStmt) Accept(v Visitor) (any, error) {
-	return v.visitStructDefStmt(s)
+	return v.VisitStructDefStmt(s)
 }
 
 type FuncDefStmt struct {
@@ -103,7 +103,7 @@ func (s *FuncDefStmt) String() string {
 }
 
 func (s *FuncDefStmt) Accept(v Visitor) (any, error) {
-	return v.visitFuncDefStmt(s)
+	return v.VisitFuncDefStmt(s)
 }
 
 type ReturnStmt struct {
@@ -125,7 +125,7 @@ func (s *ReturnStmt) String() string {
 }
 
 func (s *ReturnStmt) Accept(v Visitor) (any, error) {
-	return v.visitReturnStmt(s)
+	return v.VisitReturnStmt(s)
 }
 
 type VarDefStmt struct {
@@ -147,7 +147,7 @@ func (s *VarDefStmt) String() string {
 }
 
 func (s *VarDefStmt) Accept(v Visitor) (any, error) {
-	return v.visitVarDefStmt(s)
+	return v.VisitVarDefStmt(s)
 }
 
 type ModuleDefStmt struct {
@@ -165,5 +165,5 @@ func (s *ModuleDefStmt) String() string {
 }
 
 func (s *ModuleDefStmt) Accept(v Visitor) (any, error) {
-	return v.visitModuleDefStmt(s)
+	return v.VisitModuleDefStmt(s)
 }

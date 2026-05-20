@@ -21,7 +21,7 @@ func (t *NamedT) String() string {
 }
 
 func (t *NamedT) Accept(v Visitor) (any, error) {
-	return v.visitNamedT(t)
+	return v.VisitNamedT(t)
 }
 
 type IntT struct {
@@ -38,7 +38,7 @@ func (t *IntT) String() string {
 }
 
 func (t *IntT) Accept(v Visitor) (any, error) {
-	return v.visitIntT(t)
+	return v.VisitIntT(t)
 }
 
 type FloatT struct {
@@ -55,7 +55,7 @@ func (t *FloatT) String() string {
 }
 
 func (t *FloatT) Accept(v Visitor) (any, error) {
-	return v.visitFloatT(t)
+	return v.VisitFloatT(t)
 }
 
 type StringT struct {
@@ -72,7 +72,7 @@ func (t *StringT) String() string {
 }
 
 func (t *StringT) Accept(v Visitor) (any, error) {
-	return v.visitStringT(t)
+	return v.VisitStringT(t)
 }
 
 type FunctionT struct {
@@ -94,6 +94,10 @@ func (t *FunctionT) String() string {
 	)
 }
 
+func (t *FunctionT) Accept(v Visitor) (any, error) {
+	return v.VisitFunctionT(t)
+}
+
 type StructT struct {
 	Loc    gears.Location
 	Name   tokens.Token
@@ -107,4 +111,8 @@ func (t *StructT) Location() gears.Location {
 
 func (t *StructT) String() string {
 	return "struct %s"
+}
+
+func (t *StructT) Accept(v Visitor) (any, error) {
+	return v.VisitStructT(t)
 }
