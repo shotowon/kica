@@ -16,23 +16,23 @@ func (f *File) Statements() []Stmt {
 	return f.stmts
 }
 
-type Stmt interface {
-	stmtNode()
+type Node interface {
 	Location() gears.Location
 	String() string
 	Accept(Visitor) (any, error)
+}
+
+type Stmt interface {
+	Node
+	stmtNode()
 }
 
 type Expr interface {
+	Node
 	exprNode()
-	Location() gears.Location
-	String() string
-	Accept(Visitor) (any, error)
 }
 
 type Type interface {
+	Node
 	typeNode()
-	Location() gears.Location
-	String() string
-	Accept(Visitor) (any, error)
 }
